@@ -12,7 +12,8 @@ class LoginPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
+          padding:
+              EdgeInsets.only(left: 16.w, right: 16.w, top: 16.h, bottom: 45.h),
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,20 +32,30 @@ class LoginPage extends StatelessWidget {
                 height: 350.h,
                 width: 350.w,
               ),
-              ElevatedButton.icon(
-                icon: SvgPicture.asset(
-                  "assets/icons/google_logo.svg",
-                  height: 20.h,
-                  width: 20.w,
+              Spacer(),
+              SizedBox(
+                height: 55.h,
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade400,
+                    shape: StadiumBorder(),
+                    elevation: 1,
+                  ),
+                  icon: SvgPicture.asset(
+                    "assets/icons/google_logo.svg",
+                    height: 20.h,
+                    width: 20.w,
+                  ),
+                  onPressed: () {
+                    // Add your sign-in logic here
+                  },
+                  label: Text(
+                    "Sign In with Google",
+                    style: TextStyle(fontSize: 16.sp, color: Colors.black),
+                  ),
                 ),
-                onPressed: () {
-                  // Add your sign-in logic here
-                },
-                label: Text(
-                  "Sign in with Google",
-                  style: TextStyle(fontSize: 14.sp),
-                ),
-              )
+              ),
             ],
           ),
         ),
