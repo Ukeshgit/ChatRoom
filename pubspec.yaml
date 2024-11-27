@@ -20,24 +20,15 @@ version: 1.0.0+1
 
 environment:
   sdk: ^3.5.4
-
-
-
-
-
-
-
 dependencies:
   flutter:
-    sdk: flutter
-
-
-  
-  
+    sdk: flutter 
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
   get: ^4.6.6
   flutter_svg: ^2.0.14
+  firebase_core: ^3.8.0
+  firebase_auth: ^5.3.3
 
 dev_dependencies:
   flutter_test:
@@ -51,10 +42,6 @@ flutter_launcher_icons:
     min_sdk_android: 24 # android min sdk min:16, default 21
     adaptive_icon_background: "#ffffff" # You can use a color or image for the background
     adaptive_icon_foreground: "assets/i/appIcon.png" # For adaptive icons on Android
-
-
-
-
 flutter:
   uses-material-design: true
   assets:
