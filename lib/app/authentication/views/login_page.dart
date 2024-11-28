@@ -6,19 +6,21 @@ import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   bool _isAnimate = false;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(milliseconds: 500));
-    setState(() {
-      _isAnimate = true;
+    Future.delayed(Duration(microseconds: 500), () {
+      setState(() {
+        _isAnimate = true;
+      });
     });
   }
 
@@ -26,9 +28,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
-        //appbar
         appBar: AppBar(
           centerTitle: true,
           title: Text(
@@ -38,23 +40,15 @@ class _LoginPageState extends State<LoginPage> {
         ),
         body: Stack(
           children: [
-            // Centered Image
+            // Centered Animated Image
             AnimatedPositioned(
-              duration: Duration(microseconds: 1200),
-              child: Positioned(
-                right: !_isAnimate ? 1.h : width * 0.5,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 90.h,
-                    ),
-                    Image.asset(
-                      "assets/images/chat.png",
-                      height: 300.h,
-                      width: 300.w,
-                    ),
-                  ],
-                ),
+              duration: Duration(milliseconds: 1200),
+              top: 90.h,
+              left: _isAnimate ? width * 0.2 : width, // Animate left position
+              child: Image.asset(
+                "assets/images/chat.png",
+                height: 300.h,
+                width: 300.w,
               ),
             ),
 
