@@ -1,3 +1,4 @@
+import 'package:chatapp/app/authentication/views/auth_services.dart';
 import 'package:chatapp/app/home/views/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: 20.w,
                     ),
                     onPressed: () {
-                      Get.offAll(() => const HomeScreen());
+                      signInWithGoogle();
                     },
                     label: RichText(
                       text: TextSpan(
