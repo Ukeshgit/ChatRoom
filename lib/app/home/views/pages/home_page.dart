@@ -1,6 +1,12 @@
+import 'package:chatapp/app/authentication/views/login_page.dart';
+import 'package:chatapp/const/apis.dart';
+import 'package:chatapp/widgets/chat_user_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -8,50 +14,67 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 1,
-          leading: Icon(
-            CupertinoIcons.home,
-            size: 24.sp,
-            color: Colors.black,
-          ),
-          centerTitle: true,
-          title: Text(
-            "We chat",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w500),
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.sp),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.search,
-                    size: 24.sp,
-                  ),
-                  SizedBox(
-                    width: 14.w,
-                  ),
-                  Icon(
-                    Icons.more_vert,
-                    size: 24.sp,
-                  ),
-                ],
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        elevation: 1,
+        leading: Icon(
+          CupertinoIcons.home,
+          size: 24.sp,
+          color: Colors.black,
         ),
-        floatingActionButton: FloatingActionButton(
-          shape: CircleBorder(),
-          backgroundColor: Colors.blueAccent,
-          onPressed: () {},
-          child: Icon(
-            Icons.chat,
-            color: Colors.white,
+        centerTitle: true,
+        title: Text(
+          "We chat",
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w500),
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.sp),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  size: 24.sp,
+                ),
+                SizedBox(
+                  width: 14.w,
+                ),
+                Icon(
+                  Icons.more_vert,
+                  size: 24.sp,
+                ),
+              ],
+            ),
           ),
-        ));
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        backgroundColor: Colors.blueAccent,
+        onPressed: () async {
+          try {
+            await Apis.auth.signOut();
+            await GoogleSignIn().signOut();
+            Get.offAll(() => LoginPage());
+          } catch (e) {
+            print(e);
+          }
+        },
+        child: Icon(
+          Icons.chat,
+          color: Colors.white,
+        ),
+      ),
+      body: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(vertical: 8.h),
+        itemCount: 15,
+        itemBuilder: (context, index) {
+          return ChatUserCard();
+        },
+      ),
+    );
   }
 }
