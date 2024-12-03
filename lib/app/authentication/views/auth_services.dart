@@ -1,4 +1,5 @@
 import 'package:chatapp/app/home/views/pages/home_page.dart';
+import 'package:chatapp/const/apis.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart'; // Ensure Getx is imported for navigation
@@ -27,10 +28,15 @@ Future<void> signInWithGoogle() async {
         await FirebaseAuth.instance.signInWithCredential(credentials);
 
     // Check if sign-in was successful
-    if (userCredential.user != null) {
-      print("Successfully signed in: ${userCredential.user!.email}");
+    if (await Apis.userExists()) {
       // Navigate to the homepage
       Get.to(() => HomeScreen());
+    } else {
+      Apis.createUser().then((value) {
+        print("Successfully signed in: ${userCredential.user!.email}");
+        // Navigate to the homepage
+        Get.to(() => HomeScreen());
+      });
     }
   } catch (e) {
     print("Error signing in with Google: $e");

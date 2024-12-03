@@ -1,9 +1,11 @@
+import 'package:chatapp/app/authentication/model/auth_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatUserCard extends StatelessWidget {
-  const ChatUserCard({super.key});
+  const ChatUserCard({super.key, required this.user});
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +15,19 @@ class ChatUserCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.r),
         onTap: () {},
         child: ListTile(
+          //title
           title: Text(
-            "Yukesh Katuwal",
+            user.name!,
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
           ),
+          //subtitle
           subtitle: Text(
-            "Hello Ram, How are you doing my boy",
+            user.about!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 14.sp),
           ),
+          //leading icon
           leading: Icon(
             CupertinoIcons.person,
             size: 24.sp,

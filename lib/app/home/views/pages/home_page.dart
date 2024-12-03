@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:chatapp/app/authentication/model/auth_model.dart';
 import 'package:chatapp/app/authentication/views/login_page.dart';
 import 'package:chatapp/const/apis.dart';
 import 'package:chatapp/widgets/chat_user_card.dart';
@@ -13,6 +16,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List list = [];
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -67,12 +71,35 @@ class HomeScreen extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      body: ListView.builder(
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(vertical: 8.h),
-        itemCount: 15,
-        itemBuilder: (context, index) {
-          return ChatUserCard();
+      body: StreamBuilder(
+        stream: Apis.firestore.collection('user').snapshots(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            //data is loading
+            case ConnectionState.waiting:
+            case ConnectionState.none:
+              return Center(child: CircularProgressIndicator());
+
+            //some data is loaded then show it
+            case ConnectionState.active:
+            case ConnectionState.done:
+              final alldata = snapshot.data!.docs;
+              list = alldata
+                  .map((e) => UserModel.fromFirestore(e.data()))
+                  .toList();
+          }
+          if (list.isNotEmpty) {
+            return ListView.builder(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                return ChatUserCard(user: list[index]);
+              },
+            );
+          } else {
+            return Center(child: Text("OOPS!!!No data found"));
+          }
         },
       ),
     );
