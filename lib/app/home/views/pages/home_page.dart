@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:chatapp/app/authentication/model/auth_model.dart';
 import 'package:chatapp/app/authentication/views/login_page.dart';
+import 'package:chatapp/app/profile/profile_screen.dart';
 import 'package:chatapp/const/apis.dart';
 import 'package:chatapp/widgets/chat_user_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,8 +12,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    Apis.getSelfUserInfo();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +57,14 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   width: 14.w,
                 ),
-                Icon(
-                  Icons.more_vert,
-                  size: 24.sp,
+                InkWell(
+                  onTap: () {
+                    Get.to(() => ProfileScreen(user: Apis.me));
+                  },
+                  child: Icon(
+                    Icons.more_vert,
+                    size: 24.sp,
+                  ),
                 ),
               ],
             ),
@@ -72,7 +89,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: StreamBuilder(
-        stream: Apis.firestore.collection('user').snapshots(),
+        stream: Apis.getAllData(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             //data is loading

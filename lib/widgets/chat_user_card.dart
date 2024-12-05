@@ -35,12 +35,15 @@ class _ChatUserCardState extends State<ChatUserCard> {
               style: TextStyle(fontSize: 14.sp),
             ),
             //leading icon
-            leading: CachedNetworkImage(
-              height: 20.h,
-              width: 20.w,
-              imageUrl: widget.user.image!,
-              // placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(20.r),
+              child: CachedNetworkImage(
+                height: 40.h,
+                width: 40.w,
+                imageUrl: widget.user.image!,
+                // placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ),
             trailing: (!widget.user.isOnline!)
                 ? Container(
