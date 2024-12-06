@@ -1,5 +1,6 @@
 import 'package:chatapp/app/authentication/model/auth_model.dart';
 import 'package:chatapp/app/authentication/views/login_page.dart';
+import 'package:chatapp/app/profile/widgets/showbottomsheet.dart';
 import 'package:chatapp/const/apis.dart';
 import 'package:chatapp/widgets/custom_button.dart';
 import 'package:chatapp/widgets/custom_text_input_field.dart';
@@ -65,7 +66,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(10.sp),
                         onTap: () {
-                          // Add edit functionality here
+                          //show bottomsheet when edit button is pressed
+                          showbottomSheet(context);
                         },
                         child: CircleAvatar(
                           backgroundColor: Colors.white,

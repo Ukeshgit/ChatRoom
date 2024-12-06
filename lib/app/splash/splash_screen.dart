@@ -18,10 +18,20 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+  @override
   void initState() {
+    super.initState();
+
+    // Set system UI mode to show only the bottom navigation bar
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.bottom]);
 
+    // Set the navigation bar color to white
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(systemNavigationBarColor: Colors.white),
+    );
+
+    // Navigate after 3 seconds based on authentication status
     Future.delayed(Duration(seconds: 3), () {
       if (Apis.auth.currentUser != null) {
         Get.offAll(() => HomeScreen());
@@ -29,8 +39,6 @@ class _SplashScreenState extends State<SplashScreen> {
         Get.offAll(() => LoginPage());
       }
     });
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
