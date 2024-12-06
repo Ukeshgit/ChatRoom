@@ -114,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 CustomTextInputField(
                   initialValue: widget.user.about!,
                   onsaved: (newValue) {
-                    Apis.me.about = newValue ?? "";
+                    Apis.me.about = newValue;
                   },
                   validator: (val) {
                     if (val == null || val.isEmpty) {
