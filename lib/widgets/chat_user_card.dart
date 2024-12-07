@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/app/authentication/model/auth_model.dart';
+import 'package:chatapp/app/home/views/pages/chat_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class ChatUserCard extends StatefulWidget {
   const ChatUserCard({super.key, required this.user});
@@ -20,7 +22,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
       margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       child: InkWell(
         borderRadius: BorderRadius.circular(8.r),
-        onTap: () {},
+        onTap: () {
+          Get.to(() => ChatPage(
+                user: widget.user,
+              ));
+        },
         child: ListTile(
             //title
             title: Text(

@@ -28,7 +28,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Set the navigation bar color to white
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(systemNavigationBarColor: Colors.white),
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.white,
+      ),
     );
 
     // Navigate after 3 seconds based on authentication status
