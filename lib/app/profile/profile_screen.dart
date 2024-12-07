@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chatapp/app/authentication/model/auth_model.dart';
 import 'package:chatapp/app/authentication/views/login_page.dart';
 import 'package:chatapp/app/profile/widgets/showbottomsheet.dart';
@@ -19,6 +21,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String? imagePath;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -58,16 +61,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     CircleAvatar(
                       radius: 80.r,
-                      backgroundImage: NetworkImage(widget.user.image!),
+                      backgroundImage: imagePath != null
+                          ? FileImage(File(imagePath!)) as ImageProvider
+                          : NetworkImage(widget.user.image!),
                     ),
                     Positioned(
                       bottom: 10,
                       right: 20,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(10.sp),
-                        onTap: () {
+                        onTap: () async {
                           //show bottomsheet when edit button is pressed
-                          showbottomSheet(context);
+                          final selectedPath = await showbottomSheet(context);
+                          if (selectedPath != null) {
+                            setState(() {
+                              imagePath = selectedPath;
+                            });
+                            print("Selected image path: $imagePath");
+                          }
                         },
                         child: CircleAvatar(
                           backgroundColor: Colors.white,

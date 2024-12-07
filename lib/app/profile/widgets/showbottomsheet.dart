@@ -1,12 +1,12 @@
 import 'package:chatapp/app/authentication/views/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
-void showbottomSheet(BuildContext context) {
-  showModalBottomSheet(
+Future<String?> showbottomSheet(BuildContext context) async {
+  return await showModalBottomSheet<String>(
     context: context,
-    backgroundColor: Colors.transparent, // Make the background transparent
-
+    backgroundColor: Colors.transparent,
     builder: (_) {
       return Container(
         padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -31,29 +31,45 @@ void showbottomSheet(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(eccentricity: 0.6),
-                      backgroundColor: Colors.white,
-                    ),
-                    onPressed: () {},
-                    child: Image.asset(
-                      "assets/images/add_image.png",
-                      height: 100.h,
-                      width: 100.w,
-                    )),
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? image =
+                        await picker.pickImage(source: ImageSource.gallery);
+                    if (image != null) {
+                      Navigator.pop(context, image.path);
+                    }
+                  },
+                  child: Image.asset(
+                    "assets/images/add_image.png",
+                    height: 100.h,
+                    width: 100.w,
+                  ),
+                ),
                 ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(eccentricity: 0.6),
-                      backgroundColor: Colors.white,
-                    ),
-                    onPressed: () {},
-                    child: Image.asset(
-                      "assets/images/camera.png",
-                      height: 100.h,
-                      width: 100.w,
-                    )),
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? image =
+                        await picker.pickImage(source: ImageSource.camera);
+                    if (image != null) {
+                      Navigator.pop(context, image.path);
+                    }
+                  },
+                  child: Image.asset(
+                    "assets/images/camera.png",
+                    height: 100.h,
+                    width: 100.w,
+                  ),
+                ),
               ],
-            )
+            ),
           ],
         ),
       );
