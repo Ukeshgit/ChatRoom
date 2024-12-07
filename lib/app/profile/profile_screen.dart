@@ -9,6 +9,7 @@ import 'package:chatapp/widgets/custom_text_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,6 +24,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? imagePath;
   final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    // Load the saved image path
+    final box = GetStorage();
+    imagePath = box.read('saved_image_path');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +79,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(10.sp),
                         onTap: () async {
-                          //show bottomsheet when edit button is pressed
+                          // Show bottom sheet to select an image
                           final selectedPath = await showbottomSheet(context);
                           if (selectedPath != null) {
                             setState(() {
                               imagePath = selectedPath;
                             });
+
+                            // Save the image path in GetStorage
+                            final box = GetStorage();
+                            box.write('saved_image_path', selectedPath);
+
                             print("Selected image path: $imagePath");
+                            print("Image path saved in GetStorage");
                           }
                         },
                         child: CircleAvatar(
