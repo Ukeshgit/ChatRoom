@@ -4,7 +4,7 @@ class ChatModel {
   final String? read;
   final String? sent;
   final String? toId;
-  final Type? type;
+  // final Type? type;
 
   ChatModel({
     this.fromId,
@@ -12,7 +12,7 @@ class ChatModel {
     this.read,
     this.sent,
     this.toId,
-    this.type,
+    // this.type,
   });
 
   // Factory constructor to create an instance from JSON
@@ -23,7 +23,7 @@ class ChatModel {
       read: json['read'] as String?,
       sent: json['sent'] as String?,
       toId: json['toId'] as String?,
-      type: json['type'].toString() == Type.image.name ? Type.image : Type.text,
+      // type: json['type'].toString() == Type.image.name ? Type.image : Type.text,
     );
   }
 
@@ -35,7 +35,7 @@ class ChatModel {
       'read': read,
       'sent': sent,
       'toId': toId,
-      'type': type,
+      // 'type': type,
     };
   }
 }
