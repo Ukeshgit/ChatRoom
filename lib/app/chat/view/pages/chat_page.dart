@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/app/authentication/model/auth_model.dart';
+import 'package:chatapp/app/chat/model/chat_model.dart';
+import 'package:chatapp/app/chat/view/widgets/message_card.dart';
 import 'package:chatapp/const/apis.dart';
-import 'package:chatapp/widgets/chat_user_card.dart';
+import 'package:chatapp/app/chat/view/widgets/chat_user_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +19,9 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<UserModel> list = [];
+  //for storing list message
+  List<ChatModel> list = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -102,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             Expanded(
               child: StreamBuilder(
-                stream: Apis.getAllData(),
+                stream: Apis.getAllChatMessages(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
@@ -110,21 +114,38 @@ class _ChatPageState extends State<ChatPage> {
                       return Center(child: CircularProgressIndicator());
                     case ConnectionState.active:
                     case ConnectionState.done:
-                      final allData = snapshot.data!.docs;
-                      if (allData.isNotEmpty) {
-                        final users = allData
-                            .map((e) => UserModel.fromFirestore(e.data()))
-                            .toList();
+                      // final allData = snapshot.data!.docs;
+                      list.clear();
+                      list.add(ChatModel(
+                          fromId: Apis.user.uid,
+                          msg: 'Hi',
+                          read: '',
+                          sent: '11:58 PM',
+                          toId: 'XYZ',
+                          type: Type.text));
+                      list.add(ChatModel(
+                          fromId: 'XYZ',
+                          msg: 'Hello',
+                          read: '',
+                          sent: '12:05 PM',
+                          toId: Apis.user.uid,
+                          type: Type.text));
+
+                      if (list.isNotEmpty) {
+                        // final users = allData
+                        //     .map((e) => UserModel.fromFirestore(e.data()))
+                        //     .toList();
+
                         return ListView.builder(
                           physics: BouncingScrollPhysics(),
                           padding: EdgeInsets.symmetric(vertical: 8.h),
-                          itemCount: users.length,
+                          itemCount: list.length,
                           itemBuilder: (context, index) {
-                            return Text("data");
+                            return MessageCard(messages: list[index]);
                           },
                         );
                       } else {
-                        return Center(child: Text("OOPS!!! No data found"));
+                        return Center(child: Text("Say Hi!👏"));
                       }
                   }
                 },

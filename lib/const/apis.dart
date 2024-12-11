@@ -63,4 +63,12 @@ class Apis {
         .where('id', isNotEqualTo: user.uid)
         .snapshots();
   }
+
+  //to get messages from specific user from firestore database
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChatMessages() {
+    return firestore
+        .collection('messages')
+        .where('id', isNotEqualTo: user.uid)
+        .snapshots();
+  }
 }

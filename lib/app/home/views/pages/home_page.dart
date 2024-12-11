@@ -5,7 +5,7 @@ import 'package:chatapp/app/authentication/views/login_page.dart';
 import 'package:chatapp/app/home/controller/search_controller.dart';
 import 'package:chatapp/app/profile/profile_screen.dart';
 import 'package:chatapp/const/apis.dart';
-import 'package:chatapp/widgets/chat_user_card.dart';
+import 'package:chatapp/app/chat/view/widgets/chat_user_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

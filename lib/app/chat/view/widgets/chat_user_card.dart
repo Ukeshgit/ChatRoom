@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/app/authentication/model/auth_model.dart';
-import 'package:chatapp/app/home/views/pages/chat_page.dart';
+import 'package:chatapp/app/chat/view/pages/chat_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
