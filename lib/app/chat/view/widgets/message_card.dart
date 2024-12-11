@@ -1,7 +1,9 @@
+import 'package:chatapp/app/authentication/views/login_page.dart';
 import 'package:chatapp/app/chat/model/chat_model.dart';
 import 'package:chatapp/const/apis.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MessageCard extends StatelessWidget {
   const MessageCard({super.key, required this.messages});
@@ -14,16 +16,81 @@ class MessageCard extends StatelessWidget {
 
   //sender or another user message
   Widget _blueMessage() {
-    return Container(
-      child: Text(
-        messages.msg!,
-        style: TextStyle(color: Colors.red, fontSize: 11),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Container(
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 221, 245, 255),
+                border: Border.all(color: Colors.lightBlue),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25.sp),
+                    topRight: Radius.circular(25.sp),
+                    bottomRight: Radius.circular(25.sp))),
+            margin: EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.w),
+            padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.w),
+            child: Text(
+              messages.msg!,
+              style: TextStyle(color: Colors.black, fontSize: 22.sp),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(right: 16.w),
+          child: Text(
+            messages.read! + "12:00 PM",
+            style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+          ),
+        )
+      ],
     );
   }
 
   //our or user message
   Widget _greenMessage() {
-    return Container();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Padding(
+                padding: EdgeInsets.only(left: 16.w),
+                child: Icon(
+                  Icons.done_all,
+                  color: Colors.blueAccent,
+                )),
+            SizedBox(
+              width: 6.w,
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: 16.w),
+              child: Text(
+                messages.read! + "11:58 PM",
+                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+              ),
+            ),
+          ],
+        ),
+        Flexible(
+          child: Container(
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 218, 255, 176),
+                border: Border.all(color: Colors.lightGreen),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25.sp),
+                    topRight: Radius.circular(25.sp),
+                    bottomLeft: Radius.circular(25.sp))),
+            margin: EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.w),
+            padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.w),
+            child: Text(
+              messages.msg!,
+              style: TextStyle(color: Colors.black, fontSize: 22.sp),
+            ),
+          ),
+        ),
+      ],
+    );
+    ;
   }
 }
