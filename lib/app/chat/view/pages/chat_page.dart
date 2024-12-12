@@ -211,8 +211,8 @@ class _ChatPageState extends State<ChatPage> {
             borderRadius: BorderRadius.circular(16),
           ),
           child: Container(
-            width: 35, // Set a fixed width for the card
-            height: 35, // Set a fixed height for the card
+            width: 35,
+            height: 35,
             alignment: Alignment.center,
             child: MaterialButton(
               minWidth: 60, // Adjust button width

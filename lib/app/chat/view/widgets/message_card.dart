@@ -1,6 +1,8 @@
 import 'package:chatapp/app/authentication/views/login_page.dart';
 import 'package:chatapp/app/chat/model/chat_model.dart';
 import 'package:chatapp/const/apis.dart';
+import 'package:chatapp/helper/my_date_util.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,11 +13,16 @@ class MessageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Apis.user.uid == messages.fromId ? _greenMessage() : _blueMessage();
+    return Apis.user.uid == messages.fromId
+        ? _greenMessage(context)
+        : _blueMessage(context);
   }
 
   //sender or another user message
-  Widget _blueMessage() {
+  Widget _blueMessage(BuildContext context) {
+    if (messages.read!.isEmpty) {
+      Apis.updateMessageReadStatus(messages);
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -39,7 +46,7 @@ class MessageCard extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(right: 16.w),
           child: Text(
-            messages.read! + "12:00 PM",
+            MyDateUtil.getFormattedTime(context, messages.sent!),
             style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
           ),
         )
@@ -48,25 +55,27 @@ class MessageCard extends StatelessWidget {
   }
 
   //our or user message
-  Widget _greenMessage() {
+  Widget _greenMessage(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            Padding(
-                padding: EdgeInsets.only(left: 16.w),
-                child: Icon(
-                  Icons.done_all,
-                  color: Colors.blueAccent,
-                )),
+            //show tick button only if message is read
+            if (messages.read!.isNotEmpty)
+              Padding(
+                  padding: EdgeInsets.only(left: 16.w),
+                  child: Icon(
+                    Icons.done_all,
+                    color: Colors.blueAccent,
+                  )),
             SizedBox(
               width: 6.w,
             ),
             Padding(
               padding: EdgeInsets.only(right: 16.w),
               child: Text(
-                messages.read! + "11:58 PM",
+                MyDateUtil.getFormattedTime(context, messages.sent!),
                 style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
               ),
             ),
