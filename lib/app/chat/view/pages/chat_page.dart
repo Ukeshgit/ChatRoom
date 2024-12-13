@@ -4,8 +4,9 @@ import 'package:chatapp/app/authentication/model/auth_model.dart';
 import 'package:chatapp/app/chat/model/chat_model.dart';
 import 'package:chatapp/app/chat/view/widgets/message_card.dart';
 import 'package:chatapp/const/apis.dart';
-import 'package:chatapp/app/chat/view/widgets/chat_user_card.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  bool showemoji = false;
   //for storing list message
   List<ChatModel> list = [];
   TextEditingController _textcontroller = TextEditingController();
@@ -48,107 +50,136 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
     return SafeArea(
+        child: GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: WillPopScope(
+        onWillPop: () {
+          if (showemoji) {
+            setState(() {
+              showemoji = !showemoji;
+            });
+            //screen is not removed
+            return Future.value(false);
+          }
+          //screen is removed
+          return Future.value(true);
+        },
         child: Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          flexibleSpace: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h),
-            child: Row(
-              children: [
-                InkWell(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Icon(Icons.arrow_back)),
-                SizedBox(
-                  width: 12.w,
-                ),
-                //image
+          appBar: AppBar(
+              automaticallyImplyLeading: false,
+              flexibleSpace: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h),
+                child: Row(
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: Icon(Icons.arrow_back)),
+                    SizedBox(
+                      width: 12.w,
+                    ),
+                    //image
 
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20.r),
-                  child: CachedNetworkImage(
-                    height: 40.h,
-                    width: 40.w,
-                    imageUrl: widget.user.image!,
-                    // placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-                SizedBox(
-                  width: 12.w,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //title->show name
-                      Text(
-                        widget.user.name!,
-                        style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w600),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20.r),
+                      child: CachedNetworkImage(
+                        height: 40.h,
+                        width: 40.w,
+                        imageUrl: widget.user.image!,
+                        // placeholder: (context, url) => CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
-                      //subtitle->shows the last seen time of user
-                      Text(
-                        "Last Seen not Available ",
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          )),
-      body: Container(
-        color: const Color.fromARGB(255, 234, 238, 255),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
-            children: [
-              Expanded(
-                child: StreamBuilder(
-                  stream: Apis.getAllChatMessages(widget.user),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                      case ConnectionState.none:
-                        return Center(child: SizedBox());
-                      case ConnectionState.active:
-                      case ConnectionState.done:
-                        final allData = snapshot.data!.docs;
-                        print("DDDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEEEE");
-                        print(allData);
-
-                        if (allData.isNotEmpty) {
-                          list = allData
-                              .map((e) => ChatModel.fromJson(e.data()))
-                              .toList();
-
-                          return ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            padding: EdgeInsets.symmetric(vertical: 8.h),
-                            itemCount: list.length,
-                            itemBuilder: (context, index) {
-                              return MessageCard(messages: list[index]);
-                            },
-                          );
-                        } else {
-                          return Center(
-                              child: Text(
-                            "Say Hi!👋",
-                            style: TextStyle(fontSize: 20.sp),
-                          ));
-                        }
-                    }
-                  },
+                    ),
+                    SizedBox(
+                      width: 12.w,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //title->show name
+                          Text(
+                            widget.user.name!,
+                            style: TextStyle(
+                                fontSize: 16.sp, fontWeight: FontWeight.w600),
+                          ),
+                          //subtitle->shows the last seen time of user
+                          Text(
+                            "Last Seen not Available ",
+                            style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
                 ),
+              )),
+          body: Container(
+            color: const Color.fromARGB(255, 234, 238, 255),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: StreamBuilder(
+                      stream: Apis.getAllChatMessages(widget.user),
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.waiting:
+                          case ConnectionState.none:
+                            return Center(child: SizedBox());
+                          case ConnectionState.active:
+                          case ConnectionState.done:
+                            final allData = snapshot.data!.docs;
+                            print("DDDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEEEE");
+                            print(allData);
+
+                            if (allData.isNotEmpty) {
+                              list = allData
+                                  .map((e) => ChatModel.fromJson(e.data()))
+                                  .toList();
+
+                              return ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                itemCount: list.length,
+                                itemBuilder: (context, index) {
+                                  return MessageCard(messages: list[index]);
+                                },
+                              );
+                            } else {
+                              return Center(
+                                  child: Text(
+                                "Say Hi!👋",
+                                style: TextStyle(fontSize: 20.sp),
+                              ));
+                            }
+                        }
+                      },
+                    ),
+                  ),
+                  _chatInput(),
+                  if (showemoji)
+                    EmojiPicker(
+                        textEditingController:
+                            _textcontroller, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
+                        config: Config(
+                          bottomActionBarConfig:
+                              BottomActionBarConfig(enabled: false),
+                          customBackspaceIcon: Icon(Icons.safety_check),
+                          searchViewConfig: SearchViewConfig(),
+                          height: 276.h,
+                        )),
+                ],
               ),
-              _chatInput()
-            ],
+            ),
           ),
         ),
       ),
@@ -167,15 +198,28 @@ class _ChatPageState extends State<ChatPage> {
               child: Row(
                 children: [
                   //emoji icon
-                  Icon(
-                    Icons.emoji_emotions,
-                    color: Colors.blue,
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        FocusScope.of(context).unfocus();
+                        showemoji = !showemoji;
+                      });
+                    },
+                    child: Icon(
+                      Icons.emoji_emotions,
+                      color: Colors.blue,
+                    ),
                   ),
                   SizedBox(
                     width: 12.w,
                   ),
                   Expanded(
                       child: TextField(
+                    onTap: () {
+                      if (showemoji) {
+                        showemoji = !showemoji;
+                      }
+                    },
                     controller: _textcontroller,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
