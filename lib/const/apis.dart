@@ -103,4 +103,13 @@ class Apis {
         .doc(messages.sent)
         .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
   }
+
+  //to get last message from the specific chat
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessages(
+      UserModel chatuser) {
+    return firestore
+        .collection('chats/${getConversationId(chatuser.id!)}/messages/')
+        .limit(1)
+        .snapshots();
+  }
 }
