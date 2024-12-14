@@ -3,7 +3,7 @@ import 'package:chatapp/app/authentication/model/auth_model.dart';
 import 'package:chatapp/app/chat/model/chat_model.dart';
 import 'package:chatapp/app/chat/view/pages/chat_page.dart';
 import 'package:chatapp/const/apis.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:chatapp/helper/my_date_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -34,7 +34,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
             stream: Apis.getLastMessages(widget.user),
             builder: (context, snapshot) {
               final alldata = snapshot.data!.docs;
-              if (alldata != null && alldata.first.exists) {
+              if (alldata.first.exists) {
                 messages = ChatModel.fromJson(alldata.first.data());
               }
               return ListTile(
@@ -69,15 +69,23 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
-                  trailing: (!widget.user.isOnline!)
-                      ? Container(
-                          height: 15.h,
-                          width: 15.w,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
-                              color: Colors.greenAccent.shade400),
-                        )
-                      : SizedBox());
+                  trailing: messages == null
+                      ? SizedBox()
+                      : messages!.read!.isEmpty &&
+                              messages!.fromId != Apis.user.uid
+                          ? Container(
+                              height: 15.h,
+                              width: 15.w,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  color: Colors.greenAccent.shade400),
+                            )
+                          : Text(
+                              MyDateUtil.getLastMessagesTime(
+                                  context: context, time: messages!.sent!),
+                              style: TextStyle(
+                                  fontSize: 16.sp, color: Colors.black45),
+                            ));
             },
           )),
     );
