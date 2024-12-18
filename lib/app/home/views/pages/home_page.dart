@@ -126,9 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 case ConnectionState.active:
                 case ConnectionState.done:
                   final alldata = snapshot.data!.docs;
-                  list = alldata
-                      .map((e) => UserModel.fromFirestore(e.data()))
-                      .toList();
+                  list =
+                      alldata.map((e) => UserModel.fromjson(e.data())).toList();
 
                   if (list.isNotEmpty) {
                     return Obx(() {

@@ -22,7 +22,7 @@ class UserModel {
   });
 
   // Factory method to create a UserModel instance from Firestore data
-  factory UserModel.fromFirestore(Map<String, dynamic> json) {
+  factory UserModel.fromjson(Map<String, dynamic> json) {
     return UserModel(
       about: json['about'] as String?,
       createdAt: json['created_at'] != null
@@ -41,14 +41,14 @@ class UserModel {
   }
 
   // Method to convert a UserModel instance to Firestore format
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> tojson() {
     return {
       'about': about,
       'created_at': createdAt?.toIso8601String(),
       'email': email,
       'id': id,
       'image': image,
-      'is_online': isOnline != null ? isOnline.toString() : null,
+      'is_online': isOnline != null ? isOnline : null,
       'last_active': lastActive?.toIso8601String(),
       'name': name,
       'push_tokens': pushTokens,

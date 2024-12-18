@@ -70,57 +70,77 @@ class _ChatPageState extends State<ChatPage> {
           appBar: AppBar(
               automaticallyImplyLeading: false,
               flexibleSpace: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h),
-                child: Row(
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Icon(Icons.arrow_back)),
-                    SizedBox(
-                      width: 12.w,
-                    ),
-                    //image
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h),
+                  child: StreamBuilder(
+                    stream: Apis.getUserInfo(widget.user),
+                    builder: (context, snapshot) {
+                      final alldata = snapshot.data!.docs,
+                          listOfGetUser = alldata
+                              .map((e) => UserModel.fromjson(e.data()))
+                              .toList();
+                      print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+                      print(listOfGetUser);
 
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20.r),
-                      child: CachedNetworkImage(
-                        height: 40.h,
-                        width: 40.w,
-                        imageUrl: widget.user.image!,
-                        // placeholder: (context, url) => CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 12.w,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      return Row(
                         children: [
-                          //title->show name
-                          Text(
-                            widget.user.name!,
-                            style: TextStyle(
-                                fontSize: 16.sp, fontWeight: FontWeight.w600),
+                          InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Icon(Icons.arrow_back)),
+                          SizedBox(
+                            width: 12.w,
                           ),
-                          //subtitle->shows the last seen time of user
-                          Text(
-                            "Last Seen not Available ",
-                            style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.grey),
+                          //image
+
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20.r),
+                            child: CachedNetworkImage(
+                              height: 40.h,
+                              width: 40.w,
+                              imageUrl: widget.user.image!,
+                              // placeholder: (context, url) => CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 12.w,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4.h),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //title->show name
+                                Text(
+                                  widget.user.name!,
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                //subtitle->shows the last seen time of user
+                                Text(
+                                  listOfGetUser.isEmpty
+                                      ? listOfGetUser[0].isOnline!
+                                          ? "Online"
+                                          : listOfGetUser[0]
+                                              .lastActive!
+                                              .toString()
+                                      : widget.user.lastActive.toString(),
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey),
+                                )
+                              ],
+                            ),
                           )
                         ],
-                      ),
-                    )
-                  ],
-                ),
-              )),
+                      );
+                    },
+                  ))),
           body: Container(
             color: const Color.fromARGB(255, 234, 238, 255),
             child: Padding(
@@ -249,41 +269,19 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
         //send icon
-        Card(
-          elevation: 1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Container(
-            width: 35,
-            height: 35,
-            alignment: Alignment.center,
-            child: MaterialButton(
-              minWidth: 60, // Adjust button width
-              height: 60, // Adjust button height
-              shape: CircleBorder(),
-              color: Colors.green,
-              elevation: 1,
-              onPressed: () {
-                if (_textcontroller.text.toString().isNotEmpty) {
-                  Apis.sendMessage(
-                      widget.user, _textcontroller.text.toString());
-                }
-                _textcontroller.text = "";
-              },
 
-              padding: EdgeInsets.symmetric(
-                  horizontal: 8), // Add padding for a larger touch area
-              child: Bounce(
-                child: Icon(
-                  Icons.send,
-                  color: Colors.white,
-                  size: 24, // Increase icon size for better visibility
-                ),
-              ),
-            ),
+        Bounce(
+          child: IconButton(
+            onPressed: () {
+              if (_textcontroller.text.toString().isNotEmpty) {
+                Apis.sendMessage(widget.user, _textcontroller.text.toString());
+              }
+              _textcontroller.text = "";
+            },
+            icon: Icon(Icons.send),
+            color: Colors.green,
           ),
-        )
+        ),
       ],
     );
   }

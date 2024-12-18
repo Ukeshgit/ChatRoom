@@ -36,7 +36,7 @@ class MyDateUtil {
         return "May";
 
       case 6:
-        return "Jun";
+        return "June";
 
       case 7:
         return "Jul";

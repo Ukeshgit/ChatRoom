@@ -31,7 +31,7 @@ class Apis {
   static Future<void> getSelfUserInfo() async {
     await firestore.collection('user').doc(user.uid).get().then((user) {
       if (user.exists) {
-        me = UserModel.fromFirestore(user.data()!);
+        me = UserModel.fromjson(user.data()!);
       } else {
         createUser().then((value) => getSelfUserInfo());
       }
@@ -54,7 +54,7 @@ class Apis {
     return (await firestore
         .collection('user')
         .doc(user.uid)
-        .set(chatUser.toFirestore()));
+        .set(chatUser.tojson()));
   }
 
   //load data from firestore database
@@ -112,5 +112,22 @@ class Apis {
         .orderBy('sent', descending: true)
         .limit(1)
         .snapshots();
+  }
+
+  //for getting specific user info
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
+      UserModel chatuser) {
+    return firestore
+        .collection('user')
+        .where('id', isEqualTo: chatuser.id)
+        .snapshots();
+  }
+
+  //update online or active status of user
+  static Future<void> updateActiveStatus(bool isOnline) async {
+    firestore.collection('user').doc(user.uid).update({
+      'is_online': isOnline,
+      'last_active': DateTime.now().millisecondsSinceEpoch.toString(),
+    });
   }
 }
