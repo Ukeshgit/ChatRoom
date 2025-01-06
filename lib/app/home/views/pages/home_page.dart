@@ -21,6 +21,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   SearchControllerM controller = Get.put(SearchControllerM());
+  final isLoading = false.obs; // Observable to track loading state
+
   @override
   void initState() {
     Apis.getSelfUserInfo();
@@ -43,112 +45,129 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           return Future.value(true);
         },
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 1,
-            leading: Icon(
-              CupertinoIcons.home,
-              size: 24.sp,
-              color: Colors.black,
-            ),
-            centerTitle: true,
-            title: Obx(() {
-              return controller.isSearching.value
-                  ? TextField(
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: "Name, Email ...",
-                        hintStyle: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.bold),
-                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                      ),
-                      onChanged: (value) => controller.filterList(value, list),
-                    )
-                  : Text(
-                      "We chat",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w500),
-                    );
-            }),
-            actions: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.sp),
-                child: Row(
-                  children: [
-                    Obx(
-                      () => InkWell(
-                        borderRadius: BorderRadius.circular(12.sp),
-                        onTap: () => controller.toggleSearch(),
-                        child: Icon(
-                          controller.isSearching.value
-                              ? Icons.clear_rounded
-                              : Icons.search,
-                          size: 24.sp,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 14.w),
-                    InkWell(
-                      onTap: () => Get.to(() => ProfileScreen(user: Apis.me)),
-                      child: Icon(
-                        Icons.more_vert,
-                        size: 24.sp,
-                      ),
-                    ),
-                  ],
+        child: Stack(
+          children: [
+            Scaffold(
+              appBar: AppBar(
+                elevation: 1,
+                leading: Icon(
+                  CupertinoIcons.home,
+                  size: 24.sp,
+                  color: Colors.black,
                 ),
+                centerTitle: true,
+                title: Obx(() {
+                  return controller.isSearching.value
+                      ? TextField(
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            hintText: "Name, Email ...",
+                            hintStyle: TextStyle(
+                                fontSize: 16.sp, fontWeight: FontWeight.bold),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                          ),
+                          onChanged: (value) =>
+                              controller.filterList(value, list),
+                        )
+                      : Text(
+                          "We chat",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w500),
+                        );
+                }),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.sp),
+                    child: Row(
+                      children: [
+                        Obx(
+                          () => InkWell(
+                            borderRadius: BorderRadius.circular(12.sp),
+                            onTap: () => controller.toggleSearch(),
+                            child: Icon(
+                              controller.isSearching.value
+                                  ? Icons.clear_rounded
+                                  : Icons.search,
+                              size: 24.sp,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 14.w),
+                        InkWell(
+                          onTap: () =>
+                              Get.to(() => ProfileScreen(user: Apis.me)),
+                          child: Icon(
+                            Icons.more_vert,
+                            size: 24.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            shape: CircleBorder(),
-            backgroundColor: Colors.blueAccent,
-            onPressed: () async {
-              try {
-                await Apis.auth.signOut();
-                await GoogleSignIn().signOut();
-                Get.offAll(() => LoginPage());
-              } catch (e) {
-                log(e.toString());
-              }
-            },
-            child: Icon(Icons.chat, color: Colors.white),
-          ),
-          body: StreamBuilder(
-            stream: Apis.getAllData(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                case ConnectionState.none:
-                  return Center(child: CircularProgressIndicator());
-                case ConnectionState.active:
-                case ConnectionState.done:
-                  final alldata = snapshot.data!.docs;
-                  list =
-                      alldata.map((e) => UserModel.fromjson(e.data())).toList();
-
-                  if (list.isNotEmpty) {
-                    return Obx(() {
-                      final dataToShow = controller.isSearching.value
-                          ? controller.searchList
-                          : list;
-                      return ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        padding: EdgeInsets.symmetric(vertical: 8.h),
-                        itemCount: dataToShow.length,
-                        itemBuilder: (context, index) {
-                          return ChatUserCard(user: dataToShow[index]);
-                        },
-                      );
-                    });
-                  } else {
-                    return Center(child: Text("OOPS!!! No data found"));
+              floatingActionButton: FloatingActionButton(
+                shape: CircleBorder(),
+                backgroundColor: Colors.blueAccent,
+                onPressed: () async {
+                  isLoading.value = true; // Start loading
+                  try {
+                    await Apis.auth.signOut();
+                    await GoogleSignIn().signOut();
+                    Get.offAll(() => LoginPage());
+                  } catch (e) {
+                    log(e.toString());
+                  } finally {
+                    isLoading.value = false; // Stop loading
                   }
-              }
-            },
-          ),
+                },
+                child: Icon(Icons.chat, color: Colors.white),
+              ),
+              body: StreamBuilder(
+                stream: Apis.getAllData(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return Center(child: CircularProgressIndicator());
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      // Ensure data is not null
+                      if (snapshot.hasData && snapshot.data != null) {
+                        final alldata = snapshot.data!.docs;
+
+                        list = alldata
+                            .map((e) => UserModel.fromjson(e.data()))
+                            .toList();
+
+                        if (list.isNotEmpty) {
+                          return Obx(() {
+                            final dataToShow = controller.isSearching.value
+                                ? controller.searchList
+                                : list;
+                            return ListView.builder(
+                              physics: BouncingScrollPhysics(),
+                              padding: EdgeInsets.symmetric(vertical: 8.h),
+                              itemCount: dataToShow.length,
+                              itemBuilder: (context, index) {
+                                return ChatUserCard(user: dataToShow[index]);
+                              },
+                            );
+                          });
+                        } else {
+                          return Center(child: Text("OOPS!!! No data found"));
+                        }
+                      } else {
+                        return Center(child: Text("No data available"));
+                      }
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
